@@ -45,30 +45,43 @@ ContainerText2 = (
 STEP1.text(ContainerText2)
 
 ContainerCode1 = (
-    """
-    App_Model = {}
-    App_Model['GCP_Bucket_Name'] = '20220615-datastore'
-    App_Model['GCP_Client'] = storage.Client()
-    App_Model['GCP_Bucket'] = App_Model['GCP_Client'].bucket(App_Model['GCP_Bucket_Name'])
-    App_Model['Metadata'] = {'DateOfLastAPIRequest':None}
-    """
+"""
+App_Model = {}
+App_Model['GCP_Bucket_Name'] = '20220615-datastore'
+App_Model['GCP_Client'] = storage.Client()
+App_Model['GCP_Bucket'] = App_Model['GCP_Client'].bucket(App_Model['GCP_Bucket_Name'])
+App_Model['Metadata'] = {'DateOfLastAPIRequest':None}
+"""
 )
 STEP1.code(ContainerCode1, language='python')
 
 ContainerText3 = (
-    """
-    We can then create a function to pickle the App_Model and check if it exists \n
-    in GCP, if it does we pull it, if it doesnt we can store a new one.
-    """
+"""
+Use a function to pickle the metadata and store it in GCP
+"""
     )
 STEP1.text(ContainerText3)
 
 ContainerCode2 = (
-    """
-    
-    """
+"""
+import pickle
+#pickle doesn't support client objects, so best we dont do the whole app_model
+def InitateAppMetadata(StorageClient, Bucket, Metadata = App_Model['Metadata']):
+    FileName = 'App_Metadata'
+    #Note name should not include file extension
+    if storage.Blob(bucket=Bucket, name=FileName).exists(StorageClient):
+        #If the file exists, pull
+        Blob = bucket.get_blob(FileName)
+        Metadata = pickle.loads(Blob.download_as_string())
+    else:
+        #If the file does not exist, push
+        with open(FileName+'.pickle', 'wb') as handle:
+            pickle.dump(Metadata, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        Blob = Bucket.blob(FileName)
+        Blob.upload_from_filename('App_Metadata.pickle')
+    return Metadata
+"""
 )
-
 STEP1.code(ContainerCode2, language='python')
 
 
@@ -103,7 +116,7 @@ Step99Text = (
     'Then we can generate a key for the service account,\n'
     'this is just a json file that we can download to our local machine'
 )
-STEP99.text(Step1Text)
+STEP99.text(Step99Text)
 STEP99.code('pip install --upgrade google-cloud-storage')
 
 

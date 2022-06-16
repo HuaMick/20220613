@@ -3,72 +3,40 @@
 from urllib.request import Request
 from google.cloud import storage
 
-App_Model = {}
-App_Model['GCP_Bucket_Name'] = '20220615-datastore'
-App_Model['GCP_Client'] = storage.Client()
-App_Model['GCP_Bucket'] = App_Model['GCP_Client'].bucket(App_Model['GCP_Bucket_Name'])
-App_Model['Metadata'] = {'DateOfLastAPIRequest':None}
-
 import pickle
-#pickle doesn't support client objects, so best we dont do the whole app_model
-def InitateAppMetadata(StorageClient, Bucket, Metadata = App_Model['Metadata']):
-    FileName = 'App_Metadata'
+
+App_Model = {}
+App_Model['DateOfLastAPIRequest'] = None
+
+GCP_Model = {}
+GCP_Model['GCP_Client'] = storage.Client()
+GCP_Model['GCP_BucketName'] = '20220615-datastore'
+GCP_Model['GCP_Bucket'] = GCP_Model['GCP_Client'].bucket(GCP_Model['GCP_BucketName'])
+GCP_Model['GCP_FileName'] = 'App_Model_20220613'
+
+def StoreAppModel(GCP_Model, App_Model):
+    Bucket = GCP_Model['GCP_Bucket']
+    FileName = GCP_Model['GCP_FileName']
+    with open(FileName+'.pickle', 'wb') as handle:
+            pickle.dump(App_Model, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    Blob = Bucket.blob(FileName)
+    Blob.upload_from_filename(FileName+'.pickle')
+    
+def InitateAppModel(GCP_Model, App_Model):
+    Bucket = GCP_Model['GCP_Bucket']
+    StorageClient = GCP_Model['GCP_Client']
+    FileName = GCP_Model['GCP_FileName']
     #Note name should not include file extension
     if storage.Blob(bucket=Bucket, name=FileName).exists(StorageClient):
-        pass
+        #If the file exists, pull
+        Blob = Bucket.get_blob(FileName)
+        App_Model = pickle.loads(Blob.download_as_string())
     else:
-        with open(FileName+'.pickle', 'wb') as handle:
-            pickle.dump(Metadata, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        Blob = Bucket.blob(FileName)
-        Blob.upload_from_filename('App_Metadata.pickle')
+        #If the file does not exist, push
+        StoreAppModel(GCP_Model, App_Model)
+    return App_Model
 
-InitateAppMetadata(StorageClient = App_Model['GCP_Client'], Bucket = App_Model['GCP_Bucket'] , Metadata = App_Model['Metadata'])
-
-bucket = App_Model['GCP_Client'].get_bucket('20220615-datastore')
-# Then do other things...
-blob = bucket.get_blob('20220615')
-print(blob.download_as_bytes())
-print(blob.download_as_text())
+InitateAppModel(GCP_Model, App_Model)
 
 
 
-name = 'file_i_want_to_check.txt'   
-storage_client = storage.Client()
-bucket_name = 'my_bucket_name'
-
-stats = storage.Blob(bucket=bucket, name=name).exists(storage_client)
-
-
-bucket_name = '20220615-datastore'
-storage_client = storage.Client()
-bucket = storage_client.bucket(bucket_name)
-
-
-
-
-
-
-
-
-
-
-
-
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
-    """Uploads a file to the bucket."""
-    # The ID of your GCS bucket
-    # bucket_name = "your-bucket-name"
-    # The path to your file to upload
-    # source_file_name = "local/path/to/file"
-    # The ID of your GCS object
-    # destination_blob_name = "storage-object-name"
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-
-    blob.upload_from_filename(source_file_name)
-
-    print(
-        f"File {source_file_name} uploaded to {destination_blob_name}."
-    )
