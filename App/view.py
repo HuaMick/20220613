@@ -1,93 +1,47 @@
 #Need to create APP Metadata data, then can make sure pull request is only done once per a day.
 
+from re import L
 import controller
+import model
+from model import VIEW_Model
 import streamlit as st
 
 st.title('20220615 - GCP Cloud Storage')
-st.subheader('Pulling data from NSW Transport API and storing it on GCP')
 
 OVERVIEW = st.container()
-ContactDetails = (
-    'Author: Mick Hua \n'
-    'Linkedin: https://www.linkedin.com/in/mick-hua-353353a/ \n'
-    'github: https://github.com/HuaMick/20220609 \n'
-    )
+OVERVIEW.text(VIEW_Model['ContactInfo'])
 
-OVERVIEW.text(ContactDetails)
-OVERVIEW.subheader('Project Overview')
-
-Objectives = (
-    'Objectives: \n'
-    '- Pull alerts from Transport NSW API \n'
-    '- Store the data on GCP Cloud Storage'
-    )
-OVERVIEW.text(Objectives)
+st.subheader('Pulling data from NSW Transport API and storing it on GCP')
 
 STEP1 = st.container()
-STEP1.subheader('Application Metadata')
-ContainerText1 = (
-    'The API Only takes a limited number of requests. \n'
-    'I do not want a user spamming the request button \n'
-    'so want to limit the requests to once per a day \n'
-    'Will need to store the metadata outside the application \n'
-    'so that it persists beyound the browser session \n'
-    'To do this will create a application metadata file \n'
-    'Can store this file onto GCP Cloud Storage \n'
-    'It can be the first thing the application pulls from GCP Cloud \n'
-    )
-STEP1.text(ContainerText1)
+STEP1.text(VIEW_Model['STEP1Text0'])
+STEP1.text(VIEW_Model['STEP1Text1'])
+STEP1.text(VIEW_Model['STEP1Text2'])
+STEP1.code(VIEW_Model['STEP1Code1'], language='python')
+STEP1.text(VIEW_Model['STEP1Text3'])
+STEP1.code(VIEW_Model['STEP1Code2'], language='python')
 
-ContainerText2 = (
-    'I have created a python module to manage the data operations and called it model \n'
-    'model is a standard name from the model view controller design pattern \n'
-    'in model we can define a dataframe to store all the app data \n'
-    )
-STEP1.text(ContainerText2)
+#Initate the App Model
+App_Model = model.InitiateAppModel(model.GCP_Model, model.App_Model)
 
-ContainerCode1 = (
-"""
-App_Model = {}
-App_Model['GCP_Bucket_Name'] = '20220615-datastore'
-App_Model['GCP_Client'] = storage.Client()
-App_Model['GCP_Bucket'] = App_Model['GCP_Client'].bucket(App_Model['GCP_Bucket_Name'])
-App_Model['Metadata'] = {'DateOfLastAPIRequest':None}
-"""
-)
-STEP1.code(ContainerCode1, language='python')
-
-ContainerText3 = (
-"""
-Use a function to pickle the metadata and store it in GCP
-"""
-    )
-STEP1.text(ContainerText3)
-
-ContainerCode2 = (
-"""
-import pickle
-#pickle doesn't support client objects, so best we dont do the whole app_model
-def InitateAppMetadata(StorageClient, Bucket, Metadata = App_Model['Metadata']):
-    FileName = 'App_Metadata'
-    #Note name should not include file extension
-    if storage.Blob(bucket=Bucket, name=FileName).exists(StorageClient):
-        #If the file exists, pull
-        Blob = bucket.get_blob(FileName)
-        Metadata = pickle.loads(Blob.download_as_string())
-    else:
-        #If the file does not exist, push
-        with open(FileName+'.pickle', 'wb') as handle:
-            pickle.dump(Metadata, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        Blob = Bucket.blob(FileName)
-        Blob.upload_from_filename('App_Metadata.pickle')
-    return Metadata
-"""
-)
-STEP1.code(ContainerCode2, language='python')
-
-
+STEP1.text(VIEW_Model['STEP1Text4'])
+STEP1.write(App_Model)
 
 STEP2 = st.container()
-STEP2.subheader('Pull our API Data')
+STEP2.text(VIEW_Model['STEP2Text0'])
+STEP2.code(VIEW_Model['STEP2Code0'])
+
+#Pull The API Data
+if 'API_Response' not in st.session_state:
+    st.session_state['API_Response'] = None
+
+def Button_Request(App_Model):
+    st.session_state['API_Response'] = controller.API_Request(App_Model)
+    STEP2.write(st.session_state['API_Response'])
+
+STEP2.button('Request API Data!', on_click=Button_Request, args=(App_Model, ))
+
+
 
 #def UNPICKLE_JSON(Container):
 #    try:
