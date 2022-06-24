@@ -1,4 +1,11 @@
 
+
+
+
+
+#google.api_core.exceptions.Forbidden: 403 GET https://storage.googleapis.com/storage/v1/b/20220618-bucket/o/Resources?fields=name&prettyPrint=false: Caller does not have storage.objects.get access to the Google Cloud Storage object.
+#https://docs.streamlit.io/knowledge-base/tutorials/databases/gcs
+
 import controller
 import model
 import streamlit as st
