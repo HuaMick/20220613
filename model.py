@@ -23,9 +23,6 @@ Resources['GCP']['RequestType'] = []
 Resources['GCP']['Response'] = []
 
 GCP = {}
-GCP['GCP_Client'] = storage.Client()
-GCP['GCP_BucketName'] = '20220618-bucket'
-GCP['GCP_Bucket'] = GCP['GCP_Client'].bucket(GCP['GCP_BucketName'])
 
 VIEW_Model={}
 VIEW_Model['ContactInfo'] = ("""
@@ -54,6 +51,12 @@ We don't want too many requests made as there is a max they allow.
 """)
 
 from os.path import exists
+
+def Model_Init():
+    global GCP
+    GCP['GCP_Client'] = storage.Client()
+    GCP['GCP_BucketName'] = '20220618-bucket'
+    GCP['GCP_Bucket'] = GCP['GCP_Client'].bucket(GCP['GCP_BucketName'])
 
 def Resources_Save(Resources):
     with open('Resources.pickle', 'wb') as handle:

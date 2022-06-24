@@ -26,6 +26,7 @@ for k,v in Session_Keys.items():
 st.title('20220613 - GCP Cloud Storage')
 
 st.write(st.session_state)
+st.write(st.secrets["client_email"])
 
 OVERVIEW = st.container()
 OVERVIEW.text(VIEW_Model['ContactInfo'])
@@ -37,6 +38,7 @@ START_CONTAINER = STEP1.empty()
 
 def BUTTON_START():
     global model
+    model.Model_Init()
     model.Resources = controller.App_Init(model.Resources, model.GCP)
     model.Resources = model.GCP_Push(model.GCP, model.Resources)
     st.session_state['APP_STARTED'] = True
