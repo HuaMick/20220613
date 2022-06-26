@@ -33,6 +33,8 @@ OVERVIEW.text(VIEW_Model['OVERVIEWText0'])
 
 STEP1 = st.container()
 STEP1.write(VIEW_Model['STEP1Text0'])
+STEP1.code(VIEW_Model['STEP1Code0'],language='python')
+STEP1.write(VIEW_Model['STEP1Text1'])
 START_CONTAINER = STEP1.empty()
 
 def BUTTON_START():

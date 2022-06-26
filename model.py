@@ -38,6 +38,18 @@ This is a learning project to experiment with GCP Cloud Storage.
 """)
 
 VIEW_Model['STEP1Text0'] = ("""
+The start button authenticates with GCP cloud using Streamlit's 
+secrets manager. You need to add the GCP authentication json to 
+the secrets input when you deploy in the .toml file format.
+You also need to pass secrets when initating the client.
+""")
+
+VIEW_Model['STEP1Code0'] = ("""
+credentials = service_account.Credentials.from_service_account_info(Secrets)
+GCP['GCP_Client'] = storage.Client(credentials=credentials)
+""")
+
+VIEW_Model['STEP1Text1'] = ("""
 The Start! button looks for resources on GCP cloud storage.
 If it can find it, it will trigger a pull otherwise will 
 create a blank one and push it. Once done we delete the button
@@ -48,7 +60,7 @@ spamming pull requests.
 
 VIEW_Model['STEP2Text0'] = ("""
 This button executes an API pull request from transport NSW.
-We don't want too many requests made as there is a max they allow.
+Again we want to prevent trolls from spamming this, so there is a max.
 """)
 
 from os.path import exists
