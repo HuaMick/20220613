@@ -3,6 +3,7 @@ import datetime
 from datetime import date
 from urllib.request import Request
 from google.cloud import storage
+from google.oauth2 import service_account
 
 import pickle
 
@@ -52,9 +53,10 @@ We don't want too many requests made as there is a max they allow.
 
 from os.path import exists
 
-def Model_Init():
+def Model_Init(Secrets):
     global GCP
-    GCP['GCP_Client'] = storage.Client()
+    credentials = service_account.Credentials.from_service_account_info(Secrets)
+    GCP['GCP_Client'] = storage.Client(credentials=credentials)
     GCP['GCP_BucketName'] = '20220618-bucket'
     GCP['GCP_Bucket'] = GCP['GCP_Client'].bucket(GCP['GCP_BucketName'])
 
