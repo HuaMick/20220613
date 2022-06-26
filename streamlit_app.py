@@ -25,10 +25,7 @@ for k,v in Session_Keys.items():
         st.session_state[k] = v
 
 st.title('20220613 - GCP Cloud Storage')
-
-st.write(st.session_state)
-st.write(st.secrets['gcp_service_account'])
-st.write(st.secrets['gcp_service_account']['client_email'])
+#st.write(st.session_state)
 
 OVERVIEW = st.container()
 OVERVIEW.text(VIEW_Model['ContactInfo'])
