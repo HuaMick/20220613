@@ -50,17 +50,18 @@ GCP['GCP_Client'] = storage.Client(credentials=credentials)
 """)
 
 VIEW_Model['STEP1Text1'] = ("""
-The Start! button looks for resources on GCP cloud storage.
-If it can find it, it will trigger a pull otherwise will 
-create a blank one and push it. Once done we delete the button
-so it can't be clicked again. This is to prevent trolls from 
-spamming pull requests.
-
+Once authenticated we can inspect resources on GCP cloud storage.
+If the app can find it will iniate a pull otherwise it will create
+a blank one and push it. Once done we delete the button so it can't
+be clicked again as we don't want trolls spamming pull requests.
 """)
 
 VIEW_Model['STEP2Text0'] = ("""
 This button executes an API pull request from transport NSW.
-Again we want to prevent trolls from spamming this, so there is a max.
+Again we want to prevent trolls from spamming this, so we delete 
+the button once we hit the max allowed. Every request is tracked
+in resources, so we can detect the number of requests that have 
+been initiated in the day and base the cap on that.
 """)
 
 from os.path import exists
