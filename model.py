@@ -5,6 +5,7 @@ from urllib.request import Request
 from google.cloud import storage
 from google.oauth2 import service_account
 
+import toml
 import pickle
 
 Info = {}
@@ -65,7 +66,8 @@ been initiated in the day and base the cap on that.
 """)
 
 from os.path import exists
-
+#Secrets = (toml.load(".streamlit\secrets.toml"))['gcp_service_account']
+#requests = pd.DataFrame({k:v for k,v in Resources['GCP'].items() if k in ['RequestDate', 'RequestType']})
 def Model_Init(Secrets):
     global GCP
     credentials = service_account.Credentials.from_service_account_info(Secrets)
