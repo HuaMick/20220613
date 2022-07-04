@@ -32,8 +32,6 @@ OVERVIEW.text(VIEW_Model['OVERVIEWText0'])
 
 STEP1 = st.container()
 STEP1.write(VIEW_Model['STEP1Text0'])
-STEP1.code(VIEW_Model['STEP1Code0'],language='python')
-STEP1.write(VIEW_Model['STEP1Text1'])
 START_CONTAINER = STEP1.empty()
 
 def BUTTON_START():
@@ -50,31 +48,12 @@ if st.session_state['APP_STARTED']:
 else:
     START_CONTAINER.button('Start!', on_click=BUTTON_START)
 
-STEP2 = st.container()
-#STEP2.write(st.session_state['Resources'])
-#STEP2.write({k:v for k,v in st.session_state['Resources']['API'].items() if k in ['RequestDate', 'RequestType']})
-#STEP2.write(pd.DataFrame({k:v for k,v in st.session_state['Resources']['API'].items() if k in ['RequestDate', 'RequestType']}))
-
 if st.session_state['APP_STARTED']:
-    STEP2.write(VIEW_Model['STEP2Text0'])
-    Session_Keys['Total Requests'] = controller.Count_Requests(date.today(), model)
-    STEP2.markdown(f"**Total pull requests made today = {Session_Keys['Total Requests']}**")
+    STEP1.write(VIEW_Model['STEP1Text1'])
+    STEP1.code(VIEW_Model['STEP1Code0'],language='python')
+    STEP1.write(VIEW_Model['STEP1Text2'])
 
-def BUTTON_PULL():
-    global model
-    st.session_state['Resources'] = controller.API_Pull(st.session_state['Resources'], model.Info)
-    Session_Keys['Total Requests'] = controller.Count_Requests(date.today(), model)
-    st.session_state['Resources'] = model.GCP_Push(model.GCP, st.session_state['Resources'])
-
-
-PULL_CONTAINER = STEP2.empty()
-PULL_CONTAINER.button('Call API!', on_click=BUTTON_PULL)
-if Session_Keys['Total Requests'] > model.Info['API_CAP']:
-    PULL_CONTAINER.empty()
-    PULL_CONTAINER.write('Maximum pull requests reached, please try again tomorrow')
-
-STEP3 = st.container()
-if st.session_state['APP_STARTED']:
+    STEP1.write(VIEW_Model['STEP1Text3'])
     requests = pd.DataFrame({k:v for k,v in st.session_state['Resources']['GCP'].items() if k in ['RequestDate', 'RequestType']})
     requests_count = requests.groupby(['RequestDate', 'RequestType'], as_index=False).agg(
         Count=pd.NamedAgg(column='RequestType', aggfunc="count")
@@ -89,7 +68,46 @@ if st.session_state['APP_STARTED']:
     , width=800
     , height=500)
     fig.update_layout(xaxis = dict(tickfont = dict(size=10)))
-    STEP2.write(fig)
+    STEP1.write(fig)
+
+STEP2 = st.container()
+# R = st.session_state['Resources']['API']['RequestDate']
+# M = ({str(k):R.count(k) for k in set(R)})[str(date.today())]
+# STEP2.write(M)
+
+def BUTTON_PULL():
+    global model
+    st.session_state['Resources'] = controller.API_Pull(st.session_state['Resources'], model.Info)
+    st.session_state['Total Requests'] = controller.Count_Requests(date.today(), st.session_state['Resources'])
+    st.session_state['Resources'] = model.GCP_Push(st.session_state['GCP'], st.session_state['Resources'])
+    STEP2.markdown(f"**Total pull requests made today = {st.session_state['Total Requests']}**")
+    
+if st.session_state['APP_STARTED']:
+    STEP2.write(VIEW_Model['STEP2Text0'])
+    PULL_CONTAINER = STEP2.empty()
+
+if st.session_state['APP_STARTED'] and st.session_state['Total Requests'] <= model.Info['API_CAP']:
+    PULL_CONTAINER.button('Call API!', on_click=BUTTON_PULL)
+    STEP2.write(VIEW_Model['STEP2Text1'])
+elif st.session_state['APP_STARTED']:
+    PULL_CONTAINER.empty()
+    STEP2.write('Maximum pull requests reached, please try again tomorrow')
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
 
 # #def UNPICKLE_JSON(Container):
 # #    try:

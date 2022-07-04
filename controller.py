@@ -38,13 +38,14 @@ def API_Pull(Resources, Info):
     Resources = model.Resources_Save(Resources)
     return Resources
 
-def Count_Requests(date, model):
-    R = model.Resources['API']['RequestDate']
+def Count_Requests(Date, Resources):
+    R = Resources['API']['RequestDate']
     if date in R:
-        Rn = ({k:R.count(k) for k in set(R)})[date]
+        Rn = ({str(k):R.count(k) for k in set(R)})[str(Date)]
+        print(Rn)
     else:
         Rn = 0    
-    return Rn
+    return 200
 
 Run = False
 if Run:

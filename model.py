@@ -35,14 +35,19 @@ github: https://github.com/HuaMick/20220609
 
 """)
 VIEW_Model['OVERVIEWText0'] = ("""
-This is a learning project to experiment with GCP Cloud Storage.
+This is a learning project to experiment with Googlce Cloud Platform
+(GCP) Cloud Storage. Cloud Storage is a no-sql datastore that has a
+generous free tier.
 """)
 
 VIEW_Model['STEP1Text0'] = ("""
+To Start Press the Start Button!
+""")
+
+VIEW_Model['STEP1Text1'] = ("""
 The start button authenticates with GCP cloud using Streamlit's 
-secrets manager. You need to add the GCP authentication json to 
-the secrets input when you deploy in the .toml file format.
-You also need to pass secrets when initating the client.
+secrets manager. GCP will generate a secrets file when you register
+you can pass the contents of this secrets file to the GCP library.
 """)
 
 VIEW_Model['STEP1Code0'] = ("""
@@ -50,19 +55,30 @@ credentials = service_account.Credentials.from_service_account_info(Secrets)
 GCP['GCP_Client'] = storage.Client(credentials=credentials)
 """)
 
-VIEW_Model['STEP1Text1'] = ("""
-Once authenticated we can inspect resources on GCP cloud storage.
-If the app can find it will iniate a pull otherwise it will create
-a blank one and push it. Once done we delete the button so it can't
-be clicked again as we don't want trolls spamming pull requests.
+VIEW_Model['STEP1Text2'] = ("""
+Once authenticated the app will
+1. Check if a resources file exists on GCP Cloud Storage
+2. Initate a pull request if found, else create a new one
+3. Push the existing or new one back to GCP 
+4. Delete the start button (so trolls don't keep clicking it)
+""")
+
+VIEW_Model['STEP1Text3'] = ("""
+Heres a Chart showing the number of PULL and PUSH requests we have
+made to the GCP API.
 """)
 
 VIEW_Model['STEP2Text0'] = ("""
-This button executes an API pull request from transport NSW.
-Again we want to prevent trolls from spamming this, so we delete 
-the button once we hit the max allowed. Every request is tracked
-in resources, so we can detect the number of requests that have 
-been initiated in the day and base the cap on that.
+Of course we want to store more on GCP, so we can also pull data
+from the transport of NSW API. Here's a button that does just that.
+Note the button won't show if we have made the max number of requests.
+""")
+
+VIEW_Model['STEP2Text1'] = ("""
+The Pull Button will:
+1. Execute an API pull request from transport NSW
+2. Store the request in resources file
+3. Push the resources file up to GCP
 """)
 
 from os.path import exists
