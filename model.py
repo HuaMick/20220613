@@ -35,7 +35,7 @@ github: https://github.com/HuaMick/20220609
 
 """)
 VIEW_Model['OVERVIEWText0'] = ("""
-This is a learning project to experiment with Googlce Cloud Platform
+This is a learning project to experiment with Google Cloud Platform
 (GCP) Cloud Storage. Cloud Storage is a no-sql datastore that has a
 generous free tier.
 """)

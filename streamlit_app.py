@@ -71,21 +71,18 @@ if st.session_state['APP_STARTED']:
     STEP1.write(fig)
 
 STEP2 = st.container()
-# R = st.session_state['Resources']['API']['RequestDate']
-# M = ({str(k):R.count(k) for k in set(R)})[str(date.today())]
-# STEP2.write(M)
+if st.session_state['APP_STARTED']:
+    STEP2.write(VIEW_Model['STEP2Text0'])
+    PULL_CONTAINER = STEP2.empty()
+    st.session_state['Total Requests'] = controller.Count_Requests(date.today(), st.session_state['Resources'])
+    STEP2.markdown(f"**Total pull requests made today = {st.session_state['Total Requests']}**")
 
 def BUTTON_PULL():
     global model
     st.session_state['Resources'] = controller.API_Pull(st.session_state['Resources'], model.Info)
     st.session_state['Total Requests'] = controller.Count_Requests(date.today(), st.session_state['Resources'])
     st.session_state['Resources'] = model.GCP_Push(st.session_state['GCP'], st.session_state['Resources'])
-    STEP2.markdown(f"**Total pull requests made today = {st.session_state['Total Requests']}**")
     
-if st.session_state['APP_STARTED']:
-    STEP2.write(VIEW_Model['STEP2Text0'])
-    PULL_CONTAINER = STEP2.empty()
-
 if st.session_state['APP_STARTED'] and st.session_state['Total Requests'] <= model.Info['API_CAP']:
     PULL_CONTAINER.button('Call API!', on_click=BUTTON_PULL)
     STEP2.write(VIEW_Model['STEP2Text1'])

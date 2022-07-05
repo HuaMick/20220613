@@ -40,12 +40,11 @@ def API_Pull(Resources, Info):
 
 def Count_Requests(Date, Resources):
     R = Resources['API']['RequestDate']
-    if date in R:
+    if Date in R:
         Rn = ({str(k):R.count(k) for k in set(R)})[str(Date)]
-        print(Rn)
     else:
         Rn = 0    
-    return 200
+    return Rn
 
 Run = False
 if Run:
