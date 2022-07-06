@@ -1,6 +1,10 @@
 #google.api_core.exceptions.Forbidden: 403 GET https://storage.googleapis.com/storage/v1/b/20220618-bucket/o/Resources?fields=name&prettyPrint=false: Caller does not have storage.objects.get access to the Google Cloud Storage object.
 #https://docs.streamlit.io/knowledge-base/tutorials/databases/gcs
 
+import debugpy
+debugpy.listen(("localhost", 5678))
+debugpy.wait_for_client()  # blocks execution until client is attached
+
 import controller
 import model
 import streamlit as st
@@ -26,9 +30,11 @@ for k,v in Session_Keys.items():
 st.title('20220613 - GCP Cloud Storage')
 #st.write(st.session_state)
 
-OVERVIEW = st.container()
+OVERVIEW = st.container()/.,..,
 OVERVIEW.text(VIEW_Model['ContactInfo'])
 OVERVIEW.text(VIEW_Model['OVERVIEWText0'])
+
+breakpoint()
 
 STEP1 = st.container()
 STEP1.write(VIEW_Model['STEP1Text0'])
