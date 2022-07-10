@@ -7,6 +7,9 @@ from datetime import date
 from os.path import exists
 from google.cloud import storage
 
+#model.Resources = App_Init(model.Resources, model.GCP)
+#api_requests = pd.DataFrame({k:v for k,v in model.Resources['API'].items() if k in ['RequestDate', 'Status']})
+    
 #Do all the stuff that needs to be done when the app starts
 def App_Init(Resources, GCP):
     #If Resources doesnt exist create it
@@ -46,8 +49,24 @@ def Count_Requests(Date, Resources):
         Rn = 0    
     return Rn
 
-Run = False
-if Run:
+Testing = False
+if Testing:
+    import toml
+    Secrets = (toml.load(".streamlit\secrets.toml"))['gcp_service_account']
+    model.Model_Init(Secrets)
     model.Resources = App_Init(Resources = model.Resources, GCP = model.GCP)
-    model.Resources = API_Pull(Resources = model.Resources, Info = model.Info)
-    model.Resources = model.GCP_Push(GCP = model.GCP, Resources=model.Resources)
+
+    
+
+    json_response = model.Resources['API']['Response'][0].json()
+    header = json_response['header']
+    body = json_response['entity']
+
+    dataset = {
+
+    }
+
+
+
+
+

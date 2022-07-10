@@ -1,9 +1,3 @@
-#google.api_core.exceptions.Forbidden: 403 GET https://storage.googleapis.com/storage/v1/b/20220618-bucket/o/Resources?fields=name&prettyPrint=false: Caller does not have storage.objects.get access to the Google Cloud Storage object.
-#https://docs.streamlit.io/knowledge-base/tutorials/databases/gcs
-
-import debugpy
-debugpy.listen(("localhost", 5678))
-debugpy.wait_for_client()  # blocks execution until client is attached
 
 import controller
 import model
@@ -30,11 +24,9 @@ for k,v in Session_Keys.items():
 st.title('20220613 - GCP Cloud Storage')
 #st.write(st.session_state)
 
-OVERVIEW = st.container()/.,..,
+OVERVIEW = st.container()
 OVERVIEW.text(VIEW_Model['ContactInfo'])
 OVERVIEW.text(VIEW_Model['OVERVIEWText0'])
-
-breakpoint()
 
 STEP1 = st.container()
 STEP1.write(VIEW_Model['STEP1Text0'])
@@ -60,12 +52,12 @@ if st.session_state['APP_STARTED']:
     STEP1.write(VIEW_Model['STEP1Text2'])
 
     STEP1.write(VIEW_Model['STEP1Text3'])
-    requests = pd.DataFrame({k:v for k,v in st.session_state['Resources']['GCP'].items() if k in ['RequestDate', 'RequestType']})
-    requests_count = requests.groupby(['RequestDate', 'RequestType'], as_index=False).agg(
+    gcp_requests = pd.DataFrame({k:v for k,v in st.session_state['Resources']['GCP'].items() if k in ['RequestDate', 'RequestType']})
+    gcp_requests_count = gcp_requests.groupby(['RequestDate', 'RequestType'], as_index=False).agg(
         Count=pd.NamedAgg(column='RequestType', aggfunc="count")
     )
 
-    fig = px.bar(requests_count
+    fig = px.bar(gcp_requests_count
     , x="RequestDate"
     , y="Count"
     , color="RequestType"
@@ -96,7 +88,23 @@ elif st.session_state['APP_STARTED']:
     PULL_CONTAINER.empty()
     STEP2.write('Maximum pull requests reached, please try again tomorrow')
 
+STEP3 = st.container()
+if st.session_state['APP_STARTED']:
+    api_requests = pd.DataFrame({k:v for k,v in st.session_state['Resources']['API'].items() if k in ['RequestDate', 'Status']})
+    api_requests_count = api_requests.groupby(['RequestDate', 'Status'], as_index=False).agg(
+        Count=pd.NamedAgg(column='Status', aggfunc="count")
+    )
 
+    fig = px.bar(api_requests_count
+    , x="RequestDate"
+    , y="Count"
+    , color="Status"
+    , barmode="group"
+    , title="API Requests"
+    , width=800
+    , height=500)
+    fig.update_layout(xaxis = dict(tickfont = dict(size=10)))
+    STEP3.write(fig)
 
 
 

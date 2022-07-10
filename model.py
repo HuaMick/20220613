@@ -1,3 +1,7 @@
+
+#import toml
+#Secrets = (toml.load(".streamlit\secrets.toml"))['gcp_service_account']
+#requests = pd.DataFrame({k:v for k,v in Resources['GCP'].items() if k in ['RequestDate', 'RequestType']})
 # pip install --upgrade google-cloud-storage
 import datetime
 from datetime import date
@@ -5,7 +9,7 @@ from urllib.request import Request
 from google.cloud import storage
 from google.oauth2 import service_account
 
-import toml
+
 import pickle
 
 Info = {}
@@ -82,8 +86,7 @@ The Pull Button will:
 """)
 
 from os.path import exists
-#Secrets = (toml.load(".streamlit\secrets.toml"))['gcp_service_account']
-#requests = pd.DataFrame({k:v for k,v in Resources['GCP'].items() if k in ['RequestDate', 'RequestType']})
+
 def Model_Init(Secrets):
     global GCP
     credentials = service_account.Credentials.from_service_account_info(Secrets)
