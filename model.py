@@ -9,7 +9,6 @@ from urllib.request import Request
 from google.cloud import storage
 from google.oauth2 import service_account
 
-
 import pickle
 
 Info = {}

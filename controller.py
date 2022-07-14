@@ -52,6 +52,8 @@ def Count_Requests(Date, Resources):
 Testing = False
 if Testing:
     import toml
+    import datetime
+    import pandas as pd
     Secrets = (toml.load(".streamlit\secrets.toml"))['gcp_service_account']
     model.Model_Init(Secrets)
     model.Resources = App_Init(Resources = model.Resources, GCP = model.GCP)
@@ -60,12 +62,53 @@ if Testing:
 
     json_response = model.Resources['API']['Response'][0].json()
     header = json_response['header']
-    body = json_response['entity']
+    body = {v['id']:v['alert'] for v in json_response['entity']}
+    
 
     dataset = {
-
+        'id':[]
+        , 'start': []
     }
 
+    for n0, (id, alert) in enumerate(body.items()):
+        print(id)
+        print(alert['activePeriod'][0]['start'])
+        packet = {
+            'id':id
+            , 'start': datetime.datetime.fromtimestamp(int(alert['activePeriod'][0]['start']))
+        }
+        for k,v in packet.items():
+            dataset[k].append(v)
+            
+    df = pd.DataFrame.from_dict(dataset)   
+
+
+#MAX and Min of Dataset
+"""
+datetime.datetime(2022, 6, 22, 22, 2)
+, datetime.datetime(2022, 6, 24, 20, 0)
+, datetime.datetime(2022, 6, 30, 22, 0)
+, datetime.datetime(2022, 6, 20, 19, 0)
+, datetime.datetime(2022, 6, 27, 7, 0)
+, datetime.datetime(2022, 6, 24, 20, 0)
+, datetime.datetime(2022, 7, 10, 19, 0)
+, datetime.datetime(2022, 7, 2, 2, 0)
+, datetime.datetime(2022, 6, 6, 5, 0)
+, datetime.datetime(2022, 7, 3, 0, 0)
+, datetime.datetime(2022, 6, 27, 10, 0)
+, datetime.datetime(2022, 4, 26, 4, 0)
+, datetime.datetime(2022, 6, 13, 4, 0)
+, datetime.datetime(2022, 5, 30, 2, 0)
+, datetime.datetime(2022, 5, 23, 0, 1)
+, datetime.datetime(2021, 11, 22, 12, 0)
+, datetime.datetime(2022, 5, 23, 4, 0)
+, datetime.datetime(2022, 4, 4, 4, 0)
+, datetime.datetime(2022, 4, 14, 8, 17, 53)
+, datetime.datetime(2022, 4, 26, 15, 19, 25)
+, datetime.datetime(2022, 5, 10, 2, 0)
+, datetime.datetime(2022, 5, 11, 4, 0)
+, datetime.datetime(2022, 5, 23, 6, 0)]
+"""
 
 
 
